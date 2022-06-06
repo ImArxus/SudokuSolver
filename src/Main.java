@@ -1,5 +1,14 @@
 import stev.booleans.*;
 
+/**
+ * 
+ * @author LE BALANGER Alexandre - LEBA20129906
+ * @author DOLLO Vincent - DOLV26029901
+ * @author MARTINEZ Eloy - MARE12089900
+ * @author KHODJA Meziane - KHOM26099900
+ *
+ */
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -20,8 +29,10 @@ public class Main {
 			BooleanFormula formulaForRows = Constraints.checkRows(gridSize, formula);
 			BooleanFormula formulaForColumns = Constraints.checkColumns(gridSize, formula);
 			BooleanFormula formulaForSquares = Constraints.checkSquares(gridSize, formula);
-			formula = BooleanFormula.toCnf(new And(formula, formulaForRows, formulaForColumns, formulaForSquares));
+			BooleanFormula formulaForValues = Constraints.checkCellsValue(gridSize, formula);
+			formula = BooleanFormula.toCnf(new And(formula, formulaForRows, formulaForColumns, formulaForSquares, formulaForValues));
 			long end = System.currentTimeMillis();
+			
 			System.out.println(formula);
 			System.out.println("Durée d'exécution : " + (end - start) / 1000 + "s");
 

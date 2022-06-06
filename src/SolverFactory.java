@@ -14,11 +14,14 @@ public class SolverFactory {
 
 		for (int[] clause : clauses) {
 			try {
-				solver.addClause(new VecInt(clause));
+				if (clause.length > 0) {
+					solver.addClause(new VecInt(clause));
+				}
 			} catch (ContradictionException e) {
+				e.printStackTrace();
 			}
 		}
-		
+
 		return solver;
 	}
 

@@ -5,6 +5,9 @@ import stev.booleans.PropositionalVariable;
 public class Constraints {
 
 	public static BooleanFormula checkRows(int gridSize, BooleanFormula formula) {
+		int counter = 0;
+		ProgressBar progressBar = new ProgressBar("Contraintes sur les lignes");
+
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
@@ -21,14 +24,20 @@ public class Constraints {
 					}
 				}
 			}
-			System.out.println("> checkRows : " + i);
+			if (i % (111 * gridSize / 23) == 0) {
+				progressBar.showProgress(counter++);
+			}
 			formula = BooleanFormula.toCnf(formula);
 		}
 
+		System.out.println("[ OK ] Contraintes sur les lignes");
 		return formula;
 	}
 
 	public static BooleanFormula checkColumns(int gridSize, BooleanFormula formula) {
+		int counter = 0;
+		ProgressBar progressBar = new ProgressBar("Contraintes sur les colonnes");
+
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
@@ -45,14 +54,20 @@ public class Constraints {
 					}
 				}
 			}
-			System.out.println("> checkColumns : " + i);
+			if (i % (111 * gridSize / 23) == 0) {
+				progressBar.showProgress(counter++);
+			}
 			formula = BooleanFormula.toCnf(formula);
 		}
-
+		
+		System.out.println("[ OK ] Contraintes sur les colonnes");
 		return formula;
 	}
 
 	public static BooleanFormula checkSquares(int gridSize, BooleanFormula formula) {
+		int counter = 0;
+		ProgressBar progressBar = new ProgressBar("Contraintes sur les carrés");
+
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
@@ -72,10 +87,13 @@ public class Constraints {
 					}
 				}
 			}
-			System.out.println("> checkSquares : " + i);
+			if (i % (111 * gridSize / 23) == 0) {
+				progressBar.showProgress(counter++);
+			}
 			formula = BooleanFormula.toCnf(formula);
 		}
 
+		System.out.println("[ OK ] Contraintes sur les carrées");
 		return formula;
 	}
 
@@ -86,26 +104,33 @@ public class Constraints {
 		return (squareRow * squareSize) + squareColumn + 1;
 	}
 
-	// TODO
-	public static void checkCellsValue(int gridSize, BooleanFormula formula) {
+	public static BooleanFormula checkCellsValue(int gridSize, BooleanFormula formula) {
+		int counter = 0;
+		ProgressBar progressBar = new ProgressBar("Contraintes sur les valeurs");
+
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
 				for (int j = 1; j <= gridSize; j++) {
-					int a = i / 10;
-					int c = i % 10;
+					int indexes = i / 10;
+					int value = i % 10;
 
-					if (j != c) {
+					if (j != value) {
 						String stri = String.valueOf(i);
-						StringBuilder str = new StringBuilder().append(a).append(j);
+						StringBuilder str = new StringBuilder().append(indexes).append(j);
 						formula = new And(formula, new Implies(new PropositionalVariable(stri),
 								new Not(new PropositionalVariable(str.toString()))));
-						System.out.println(stri + " " + str);
 					}
 				}
-
 			}
+			if (i % (111 * gridSize / 23) == 0) {
+				progressBar.showProgress(counter++);
+			}
+			formula = BooleanFormula.toCnf(formula);
 		}
+
+		System.out.println("[ OK ] Contraintes sur les valeurs");
+		return formula;
 	}
 
 }
