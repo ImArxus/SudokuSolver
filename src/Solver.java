@@ -17,6 +17,12 @@ public class Solver {
 		this.mSolver = createSolver(formula);
 	}
 
+	/**
+	 * Fonction servant de Factory pour le solver
+	 * 
+	 * @param formula : la formule que l'on souhaite résoudre
+	 * @return un solveur de la formule
+	 */
 	private static ISolver createSolver(BooleanFormula formula) {
 		int[][] clauses = formula.getClauses();
 		ISolver solver = org.sat4j.minisat.SolverFactory.newDefault();
@@ -35,6 +41,11 @@ public class Solver {
 		return solver;
 	}
 
+	/**
+	 * Fonction d'affichage du sudoku résolu
+	 * 
+	 * @param formula : la formule dont on veut la solution
+	 */
 	public void printSolution(BooleanFormula formula) {
 		Map<String, Integer> variables = formula.getVariablesMap();
 		List<Integer> validValues = new ArrayList<>();
