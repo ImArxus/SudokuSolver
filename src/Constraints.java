@@ -4,7 +4,7 @@ import stev.booleans.PropositionalVariable;
 
 public class Constraints {
 
-	public static BooleanFormula checkConstraints(int gridSize, BooleanFormula formula) {
+	public static BooleanFormula checkRows(int gridSize, BooleanFormula formula) {
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
@@ -13,21 +13,55 @@ public class Constraints {
 				int value = i % 10;
 
 				for (int j = 1; j <= gridSize; j++) {
-					if (j != columnIndex) { // Contraintes sur les lignes
+					if (j != columnIndex) {
 						String stri = String.valueOf(i);
 						StringBuilder str = new StringBuilder().append(rowIndex).append(j).append(value);
 						formula = new And(formula, new Implies(new PropositionalVariable(stri),
 								new Not(new PropositionalVariable(str.toString()))));
 					}
+				}
+			}
+			System.out.println("> checkRows : " + i);
+			formula = BooleanFormula.toCnf(formula);
+		}
 
-					if (j != rowIndex) { // Contraintes sur les colonnes
+		return formula;
+	}
+
+	public static BooleanFormula checkColumns(int gridSize, BooleanFormula formula) {
+		for (int i = 111; i <= (111 * gridSize); i++) {
+			// Si on a 201 pas possible et si on a 210 pas possible
+			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
+				int rowIndex = i / 100;
+				int columnIndex = (i / 10) % 10;
+				int value = i % 10;
+
+				for (int j = 1; j <= gridSize; j++) {
+					if (j != rowIndex) {
 						String stri = String.valueOf(i);
 						StringBuilder str = new StringBuilder().append(j).append(columnIndex).append(value);
 						formula = new And(formula, new Implies(new PropositionalVariable(stri),
 								new Not(new PropositionalVariable(str.toString()))));
 					}
+				}
+			}
+			System.out.println("> checkColumns : " + i);
+			formula = BooleanFormula.toCnf(formula);
+		}
 
-					for (int k = 1; k <= gridSize; k++) { // Contraintes sur les carrés
+		return formula;
+	}
+
+	public static BooleanFormula checkSquares(int gridSize, BooleanFormula formula) {
+		for (int i = 111; i <= (111 * gridSize); i++) {
+			// Si on a 201 pas possible et si on a 210 pas possible
+			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
+				int rowIndex = i / 100;
+				int columnIndex = (i / 10) % 10;
+				int value = i % 10;
+
+				for (int j = 1; j <= gridSize; j++) {
+					for (int k = 1; k <= gridSize; k++) {
 						if ((j != rowIndex || k != columnIndex) && getSquareNumber(rowIndex, columnIndex,
 								gridSize) == getSquareNumber(j, k, gridSize)) {
 							String stri = String.valueOf(i);
@@ -38,55 +72,8 @@ public class Constraints {
 					}
 				}
 			}
-			
+			System.out.println("> checkSquares : " + i);
 			formula = BooleanFormula.toCnf(formula);
-			System.out.println(i);
-		}
-
-		return BooleanFormula.toCnf(formula);
-	}
-
-	public static BooleanFormula checkRow(int gridSize, BooleanFormula formula, int current, int rowIndex,
-			int columnIndex, int value) {
-		for (int j = 1; j <= gridSize; j++) {
-			if (j != columnIndex) {
-				String stri = String.valueOf(current);
-				StringBuilder str = new StringBuilder().append(rowIndex).append(j).append(value);
-				formula = new And(formula, new Implies(new PropositionalVariable(stri),
-						new Not(new PropositionalVariable(str.toString()))));
-			}
-		}
-
-		return formula;
-	}
-
-	public static BooleanFormula checkColumn(int gridSize, BooleanFormula formula, int current, int rowIndex,
-			int columnIndex, int value) {
-		for (int j = 1; j <= gridSize; j++) {
-			if (j != rowIndex) {
-				String stri = String.valueOf(current);
-				StringBuilder str = new StringBuilder().append(j).append(columnIndex).append(value);
-				formula = new And(formula, new Implies(new PropositionalVariable(stri),
-						new Not(new PropositionalVariable(str.toString()))));
-			}
-		}
-
-		return formula;
-	}
-
-	// TODO
-	public static BooleanFormula checkSquare(int gridSize, BooleanFormula formula, int current, int rowIndex,
-			int columnIndex, int value) {
-		for (int j = 1; j <= gridSize; j++) {
-			for (int k = 1; k <= gridSize; k++) {
-				if ((j != rowIndex || k != columnIndex)
-						&& getSquareNumber(rowIndex, columnIndex, gridSize) == getSquareNumber(j, k, gridSize)) {
-					String stri = String.valueOf(current);
-					StringBuilder str = new StringBuilder().append(j).append(k).append(value);
-					formula = new And(formula, new Implies(new PropositionalVariable(stri),
-							new Not(new PropositionalVariable(str.toString()))));
-				}
-			}
 		}
 
 		return formula;
