@@ -1,4 +1,5 @@
-import stev.booleans.*;
+import stev.booleans.BooleanFormula;
+import stev.booleans.And;
 
 /**
  * 

@@ -18,7 +18,6 @@ public class SolverFactory {
 					solver.addClause(new VecInt(clause));
 				}
 			} catch (ContradictionException e) {
-				e.printStackTrace();
 			}
 		}
 
