@@ -6,8 +6,8 @@ import stev.booleans.PropositionalVariable;
 public class ConvertGridFormula {
 
 	public static BooleanFormula convertGridToCNF(String grid) {
-		BooleanFormula f = null;
-		BooleanFormula tf = null;
+		BooleanFormula formula = null;
+		BooleanFormula tFormula = null;
 		int gridSize = (int) Math.sqrt(grid.length());
 
 		for (int i = 0; i < grid.length(); i++) {
@@ -18,46 +18,46 @@ public class ConvertGridFormula {
 			if (c != '#') {
 				String val = row + String.valueOf(column) + c;
 				PropositionalVariable var = new PropositionalVariable(val);
-				if (f == null) {
-					if (tf == null) {
-						tf = var;
+				if (formula == null) {
+					if (tFormula == null) {
+						tFormula = var;
 					} else {
-						f = new And(tf, var);
+						formula = new And(tFormula, var);
 					}
 				} else {
-					f = new And(f, var);
+					formula = new And(formula, var);
 				}
 			} else {
-				BooleanFormula sf = null;
+				BooleanFormula sFormula = null;
 				PropositionalVariable svar = null;
 				
 				for (int j = 1; j <= gridSize; j++) {
 					final String val = row + String.valueOf(column) + j;
 					final PropositionalVariable var = new PropositionalVariable(val);
-					if (sf == null) {
+					if (sFormula == null) {
 						if (svar == null) {
 							svar = var;
 						} else {
-							sf = new Or(svar, var);
+							sFormula = new Or(svar, var);
 						}
 					} else {
-						sf = new Or(sf, var);
+						sFormula = new Or(sFormula, var);
 					}
 				}
 				
-				if (f == null) {
-					if (tf == null) {
-						tf = sf;
+				if (formula == null) {
+					if (tFormula == null) {
+						tFormula = sFormula;
 					} else {
-						f = new And(tf, sf);
+						formula = new And(tFormula, sFormula);
 					}
 				} else {
-					f = new And(f, sf);
+					formula = new And(formula, sFormula);
 				}
 			}
 		}
 
-		return BooleanFormula.toCnf(f);
+		return BooleanFormula.toCnf(formula);
 	}
 
 }
