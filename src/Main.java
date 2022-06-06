@@ -4,7 +4,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		String sudoku = args[0];
-		// Sudoku = ##3#2#6##9##3#5##1##18#64####81#29##7#######8##67#82####26#95##8##2#3##9##5#1#3##
+		// Sudoku =
+		// ##3#2#6##9##3#5##1##18#64####81#29##7#######8##67#82####26#95##8##2#3##9##5#1#3##
 
 		/*
 		 * Exemple de prédicats
@@ -21,11 +22,12 @@ public class Main {
 
 		int gridSize = (int) Math.sqrt(sudoku.length());
 		BooleanFormula formula = ConvertGridFormula.convertGridToCNF(sudoku);
-		
-		formula = Constraints.checkRow(gridSize, formula);
-		formula = Constraints.checkColumn(gridSize, formula);
-		//formula = Constraints.checkSquare(gridSize, formula);
+
+		long start = System.currentTimeMillis();
+		formula = Constraints.checkConstraints(gridSize, formula);
+		long end = System.currentTimeMillis();
 		System.out.println(formula);
+		System.out.println("Durée d'exécution : " + (end - start) + "ms");
 
 		try {
 			System.out.println("On cherche si le sudoku suivant est réalisable :\n" + sudoku + "\n");

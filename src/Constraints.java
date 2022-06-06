@@ -4,7 +4,7 @@ import stev.booleans.PropositionalVariable;
 
 public class Constraints {
 
-	public static BooleanFormula checkRow(int gridSize, BooleanFormula f) {
+	public static BooleanFormula checkConstraints(int gridSize, BooleanFormula formula) {
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
@@ -12,68 +12,107 @@ public class Constraints {
 				int columnIndex = (i / 10) % 10;
 				int value = i % 10;
 
-				for (int k = 1; k <= gridSize; k++) {
-					if (k != columnIndex) {
+				for (int j = 1; j <= gridSize; j++) {
+					if (j != columnIndex) { // Contraintes sur les lignes
 						String stri = String.valueOf(i);
-						StringBuilder str = new StringBuilder().append(rowIndex).append(k).append(value);
-						f = new And(f, new Implies(new PropositionalVariable(stri),
+						StringBuilder str = new StringBuilder().append(rowIndex).append(j).append(value);
+						formula = new And(formula, new Implies(new PropositionalVariable(stri),
 								new Not(new PropositionalVariable(str.toString()))));
-						System.out.println(stri + " " + str);
+					}
+
+					if (j != rowIndex) { // Contraintes sur les colonnes
+						String stri = String.valueOf(i);
+						StringBuilder str = new StringBuilder().append(j).append(columnIndex).append(value);
+						formula = new And(formula, new Implies(new PropositionalVariable(stri),
+								new Not(new PropositionalVariable(str.toString()))));
+					}
+
+					for (int k = 1; k <= gridSize; k++) { // Contraintes sur les carrés
+						if ((j != rowIndex || k != columnIndex) && getSquareNumber(rowIndex, columnIndex,
+								gridSize) == getSquareNumber(j, k, gridSize)) {
+							String stri = String.valueOf(i);
+							StringBuilder str = new StringBuilder().append(j).append(k).append(value);
+							formula = new And(formula, new Implies(new PropositionalVariable(stri),
+									new Not(new PropositionalVariable(str.toString()))));
+						}
 					}
 				}
 			}
-			f = BooleanFormula.toCnf(f);
+			
+			formula = BooleanFormula.toCnf(formula);
+			System.out.println(i);
 		}
 
-		return f;
+		return BooleanFormula.toCnf(formula);
 	}
 
-	public static BooleanFormula checkColumn(int gridSize, BooleanFormula f) {
-		for (int i = 111; i <= (111 * gridSize); i++) {
-			// Si on a 201 pas possible et si on a 210 pas possible
-			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
-				int a = i % 100;
-				int b = i / 100;
-				for (int k = 1; k <= gridSize; k++) {
-					if (k != b) {
-						String stri = String.valueOf(i);
-						StringBuilder str = new StringBuilder().append(k).append(a);
-						f = new And(f, new Implies(new PropositionalVariable(stri),
-								new Not(new PropositionalVariable(str.toString()))));
-						System.out.println(stri + " " + str);
-					}
-				}
-
+	public static BooleanFormula checkRow(int gridSize, BooleanFormula formula, int current, int rowIndex,
+			int columnIndex, int value) {
+		for (int j = 1; j <= gridSize; j++) {
+			if (j != columnIndex) {
+				String stri = String.valueOf(current);
+				StringBuilder str = new StringBuilder().append(rowIndex).append(j).append(value);
+				formula = new And(formula, new Implies(new PropositionalVariable(stri),
+						new Not(new PropositionalVariable(str.toString()))));
 			}
-			f = BooleanFormula.toCnf(f);
 		}
 
-		return f;
+		return formula;
+	}
+
+	public static BooleanFormula checkColumn(int gridSize, BooleanFormula formula, int current, int rowIndex,
+			int columnIndex, int value) {
+		for (int j = 1; j <= gridSize; j++) {
+			if (j != rowIndex) {
+				String stri = String.valueOf(current);
+				StringBuilder str = new StringBuilder().append(j).append(columnIndex).append(value);
+				formula = new And(formula, new Implies(new PropositionalVariable(stri),
+						new Not(new PropositionalVariable(str.toString()))));
+			}
+		}
+
+		return formula;
 	}
 
 	// TODO
-	public static BooleanFormula checkSquare(int gridSize, BooleanFormula f) {
-		for (int i = 111; i <= (111 * gridSize); i++) {
-
-			f = BooleanFormula.toCnf(f);
+	public static BooleanFormula checkSquare(int gridSize, BooleanFormula formula, int current, int rowIndex,
+			int columnIndex, int value) {
+		for (int j = 1; j <= gridSize; j++) {
+			for (int k = 1; k <= gridSize; k++) {
+				if ((j != rowIndex || k != columnIndex)
+						&& getSquareNumber(rowIndex, columnIndex, gridSize) == getSquareNumber(j, k, gridSize)) {
+					String stri = String.valueOf(current);
+					StringBuilder str = new StringBuilder().append(j).append(k).append(value);
+					formula = new And(formula, new Implies(new PropositionalVariable(stri),
+							new Not(new PropositionalVariable(str.toString()))));
+				}
+			}
 		}
 
-		return f;
+		return formula;
+	}
+
+	public static int getSquareNumber(int rowIndex, int columnIndex, int gridSize) {
+		int squareSize = (int) Math.sqrt(gridSize);
+		int squareRow = (rowIndex - 1) / squareSize;
+		int squareColumn = (columnIndex - 1) / squareSize;
+		return (squareRow * squareSize) + squareColumn + 1;
 	}
 
 	// TODO
-	public static void checkCellsValue(int gridSize) {
+	public static void checkCellsValue(int gridSize, BooleanFormula formula) {
 		for (int i = 111; i <= (111 * gridSize); i++) {
 			// Si on a 201 pas possible et si on a 210 pas possible
 			if (((i / 10) % 10) != 0 && ((i % 10) != 0) && (i % 10) <= gridSize && ((i / 10) % 10 <= gridSize)) {
-				for (int k = 1; k <= gridSize; k++) {
+				for (int j = 1; j <= gridSize; j++) {
 					int a = i / 10;
 					int c = i % 10;
-					if (k != c) {
+
+					if (j != c) {
 						String stri = String.valueOf(i);
-						String str = String.valueOf(a + "" + k);
-						// f = new And(f, new Implies(new PropositionalVariable(stri), new Not(new
-						// PropositionalVariable(str))));
+						StringBuilder str = new StringBuilder().append(a).append(j);
+						formula = new And(formula, new Implies(new PropositionalVariable(stri),
+								new Not(new PropositionalVariable(str.toString()))));
 						System.out.println(stri + " " + str);
 					}
 				}
