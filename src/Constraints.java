@@ -30,7 +30,7 @@ public class Constraints {
 			formula = BooleanFormula.toCnf(formula);
 		}
 
-		System.out.println("[ OK ] Contraintes sur les lignes");
+		System.out.println("\r1/4 - [ OK ] Contraintes sur les lignes");
 		return formula;
 	}
 
@@ -60,7 +60,7 @@ public class Constraints {
 			formula = BooleanFormula.toCnf(formula);
 		}
 		
-		System.out.println("[ OK ] Contraintes sur les colonnes");
+		System.out.println("\r2/4 - [ OK ] Contraintes sur les colonnes");
 		return formula;
 	}
 
@@ -93,7 +93,7 @@ public class Constraints {
 			formula = BooleanFormula.toCnf(formula);
 		}
 
-		System.out.println("[ OK ] Contraintes sur les carrées");
+		System.out.println("\r3/4 - [ OK ] Contraintes sur les carrées");
 		return formula;
 	}
 
@@ -129,7 +129,7 @@ public class Constraints {
 			formula = BooleanFormula.toCnf(formula);
 		}
 
-		System.out.println("[ OK ] Contraintes sur les valeurs");
+		System.out.println("\r4/4 - [ OK ] Contraintes sur les valeurs");
 		return formula;
 	}
 

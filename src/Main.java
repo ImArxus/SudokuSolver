@@ -20,7 +20,7 @@ public class Main {
 			// Sudoku non-réalisable =
 			// 1#3#2#6##9##3#5##1##18#64####81#29##7####6##8##67#82####26#95##8##2#3##94#5#1#3##
 
-			System.out.println("On cherche si le sudoku suivant est réalisable :\n" + sudoku + "\n");
+			System.out.println("On cherche si le sudoku suivant est réalisable :\n" + sudoku);
 
 			int gridSize = (int) Math.sqrt(sudoku.length());
 			BooleanFormula formula = ConvertGridFormula.convertGridToCNF(sudoku);
